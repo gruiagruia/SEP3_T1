@@ -1,0 +1,77 @@
+﻿@page "/EditAccount"
+@using Domain.Model
+@using Domain.Interfaces
+@inject NavigationManager navMgr
+@inject IAuth Auth
+
+<div class="container mb-5" style="width: 70%; height: 300px">
+  <div class="row">
+    <div class="col-sm">
+      <div class="card">
+        <div class="card-body py-5 px-md-5">
+          <form>
+            <h3 class="text-center mb-4">Edit Account</h3>
+            <!-- 2 column grid layout with text inputs for the first and last names -->
+            <div class="row mb-4">
+              <div class="col">
+                <div class="form-outline">
+                  <input placeholder="First Name" type="text" id="form6Example1" class="form-control" @bind="firstName"/>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-outline">
+                  <input placeholder="Last Name" type="text" id="form6Example2" class="form-control" @bind="lastName"/>
+                </div>
+              </div>
+            </div>
+
+            <!-- Email input -->
+            <div class="form-outline mb-4">
+              <input placeholder="Email" type="email" id="form6Example5" class="form-control" @bind="email"/>
+            </div>
+
+            <!-- Text input -->
+            <div class="form-outline mb-4">
+              <input placeholder="Password" type="text" id="form6Example6" class="form-control" @bind="password"/>
+            </div>
+
+            <!-- Submit button -->
+            <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="@UpdateButtonClicked">Update</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+@code {
+  
+  private string firstName;
+  private string lastName;
+  private string email;
+  private string password;
+  private string response;
+
+  private async Task UpdateButtonClicked()
+  {
+    User updatedUser = new User(firstName, lastName, email, password, "customer");
+    
+    navMgr.NavigateTo("/");
+    
+    response = "";
+    try
+    {
+      await Auth.UpdateUserAsync(updatedUser);
+      navMgr.NavigateTo("/");
+    }
+    catch (Exception e)
+    {
+      response = "Update failed. Email already exists.";
+      Console.WriteLine(response);
+    }
+    
+  }
+}

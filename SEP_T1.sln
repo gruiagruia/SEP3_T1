@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorUI", "BlazorUI\BlazorUI.csproj", "{66CC3856-9A8E-4E66-AF8C-F9C9E2718E65}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "Domain\Domain.csproj", "{B6976A0B-9038-4291-A115-5AC5A830F584}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpServices", "HttpServices\HttpServices.csproj", "{6F95D616-82CD-4631-8415-670EB8897F65}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{66CC3856-9A8E-4E66-AF8C-F9C9E2718E65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66CC3856-9A8E-4E66-AF8C-F9C9E2718E65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66CC3856-9A8E-4E66-AF8C-F9C9E2718E65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66CC3856-9A8E-4E66-AF8C-F9C9E2718E65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B6976A0B-9038-4291-A115-5AC5A830F584}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B6976A0B-9038-4291-A115-5AC5A830F584}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B6976A0B-9038-4291-A115-5AC5A830F584}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B6976A0B-9038-4291-A115-5AC5A830F584}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F95D616-82CD-4631-8415-670EB8897F65}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F95D616-82CD-4631-8415-670EB8897F65}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F95D616-82CD-4631-8415-670EB8897F65}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F95D616-82CD-4631-8415-670EB8897F65}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
