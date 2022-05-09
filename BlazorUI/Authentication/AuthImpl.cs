@@ -5,14 +5,13 @@ using Domain.Model;
 using Microsoft.JSInterop;
 
 namespace BlazorUI.Authentication;
-
-public class AuthServiceImpl : IAuthService
+public class AuthImpl : IAuth
 {
     public Action<ClaimsPrincipal> OnAuthStateChanged { get; set; } = null!; // assigning to null! to suppress null warning.
-    private readonly IAuth userService;
+    private readonly IUser userService;
     private readonly IJSRuntime jsRuntime;
 
-    public AuthServiceImpl(IAuth userService, IJSRuntime jsRuntime)
+    public AuthImpl(IUser userService, IJSRuntime jsRuntime)
     {
         this.userService = userService;
         this.jsRuntime = jsRuntime;
@@ -20,16 +19,16 @@ public class AuthServiceImpl : IAuthService
 
     public async Task LoginAsync(string email, string password)
     {
-        User? user = await userService.GetUserByEmail(email); // Get user from database
+        User? user = await userService.GetUserByEmailAsync(email); // Get user from database
 
         ValidateLoginCredentials(password, user); // Validate input data against data from database
         // validation success
+        
         await CacheUserAsync(user!); // Cache the user object in the browser 
 
         ClaimsPrincipal principal = CreateClaimsPrincipal(user); // convert user object to ClaimsPrincipal
-
+        
         OnAuthStateChanged?.Invoke(principal); // notify interested classes in the change of authentication state
-        Console.WriteLine("LOGIN SUCCESS!");
     }
 
     public async Task LogoutAsync()
@@ -60,7 +59,7 @@ public class AuthServiceImpl : IAuthService
     {
         if (user == null)
         {
-            throw new Exception("Username not found");
+            throw new Exception("Email not found");
         }
 
         if (!string.Equals(password,user.Password))
@@ -76,7 +75,6 @@ public class AuthServiceImpl : IAuthService
             ClaimsIdentity identity = ConvertUserToClaimsIdentity(user);
             return new ClaimsPrincipal(identity);
         }
-
         return new ClaimsPrincipal();
     }
 
@@ -84,6 +82,7 @@ public class AuthServiceImpl : IAuthService
     {
         string serialisedData = JsonSerializer.Serialize(user);
         await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
+        Console.WriteLine("HI");
     }
 
     private async Task ClearUserFromCacheAsync()
@@ -93,16 +92,15 @@ public class AuthServiceImpl : IAuthService
 
     private static ClaimsIdentity ConvertUserToClaimsIdentity(User user)
     {
-        // here we take the information of the User object and convert to Claims
-        // this is (probably) the only method, which needs modifying for your own user type
         List<Claim> claims = new()
         {
+            new Claim("Id", user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.FirstName),
-            new Claim("Role", user.Role),
-            new Claim("Email", user.Email),
+            new Claim("Last Name", user.LastName),
+            new Claim(ClaimTypes.Email, user.Email),
+            new Claim("Password", user.Password),
+            new Claim("Role", user.Role)
         };
-
         return new ClaimsIdentity(claims, "apiauth_type");
     }
-    
 }

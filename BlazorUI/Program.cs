@@ -1,6 +1,5 @@
 using Blazored.Modal;
 using BlazorUI.Authentication;
-using BlazorUI.Data;
 using Domain.Interfaces;
 using HttpServices;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -12,10 +11,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; });
-builder.Services.AddSingleton<WeatherForecastService>();
-builder.Services.AddScoped<IAuth, UserHttpClient>();
-builder.Services.AddScoped<AuthenticationStateProvider, AuthStateProvider>();
-builder.Services.AddScoped<IAuthService, AuthServiceImpl>();
+builder.Services.AddScoped<AuthenticationStateProvider, SimpleAuthenticationStateProvider>();
+builder.Services.AddScoped<IAuth, AuthImpl>();
+builder.Services.AddScoped<IUser, UserHttpClient>();
+builder.Services.AddScoped<IFlight, FlightHttpClient>();
+builder.Services.AddScoped<IAmadeus, AmadeusHttpClient>();
 builder.Services.AddBlazoredModal();
 
 

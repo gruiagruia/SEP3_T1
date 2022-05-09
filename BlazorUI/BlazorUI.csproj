@@ -13,9 +13,14 @@
 
     <ItemGroup>
       <PackageReference Include="Blazored.Modal" Version="7.0.0-preiew.2" />
-      <PackageReference Include="Radzen.Blazor" Version="3.18.0" />
+      <PackageReference Include="Radzen.Blazor" Version="3.18.8" />
       <PackageReference Include="Syncfusion.Blazor" Version="20.1.0.48" />
       <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.47" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Admin\AdminLayout.razor" />
+      <_ContentIncludedByDefault Remove="Pages\Admin\AdminPanel.razor" />
     </ItemGroup>
 
 </Project>

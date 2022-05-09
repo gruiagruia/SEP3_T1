@@ -1,0 +1,76 @@
+@page "/Flights"
+@using Domain.Interfaces
+@using Domain.Model
+@layout AgentLayout
+@inject IFlight flightService
+@inject NavigationManager navMgr
+
+<div class="container">
+    <div class="row justify-content-between">
+        <div class="col-4">
+            <h3>Flights</h3>
+        </div>
+        <div class="col-4">
+            <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="@CreateFlightAsync"> New Flight</button>
+        </div>
+    </div>
+    <div class="row"></div>
+        <div class="col">
+           <table class="table table-bordered table-condensed table-striped table-hover sortable">  
+                   @if (flights.Count() == 0)  
+                       {  
+                       <tr>  
+                           <td colspan="10">No flights found.</td>  
+                       </tr>  
+                   }  
+                   else  
+                   {  
+                       <thead>  
+                           <tr class="danger">  
+                               <th data-defaultsign="_19"> AIRCRAFT CODE</th>  
+                               <th data-defaultsign="AZ">AIRLINE</th>  
+                               <th data-defaultsign="AZ">ORIGIN</th>  
+                               <th data-defaultsign="month">DESTINATION</th>  
+                               <th data-firstsort="desc">DEPARTURE DATE</th>  
+                               <th data-defaultsign="AZ">ARRIVAL DATE</th>  
+                               <th data-defaultsort="disabled">DURATION</th>  
+                               <th data-defaultsort="disabled">NUMBER OF BOOKABLE SEATS</th>  
+                               <th data-defaultsort="disabled">STATUS</th> 
+                               <th data-defaultsort="disabled">PRICE</th>  
+                           </tr>  
+                       </thead>  
+                       foreach (var item in flights)  
+                       {  
+                           <tr>  
+                               <td>@item.aircraftCode</td>  
+                               <td>@item.airline</td>  
+                               <td>@item.origin</td>  
+                               <td>@item.destination</td>  
+                               <td>@item.departureDate</td>  
+                               <td>@item.arrivalDate</td>  
+                               <td>@item.duration</td>  
+                               <td>@item.numberOfBookableSeats</td> 
+                               <td>@item.status</td>
+                           </tr>  
+                       }  
+                   }  
+               </table>  
+           </div>  
+    </div>
+
+
+@code {
+    ICollection<Flight> flights = new List<Flight>();
+    Flight selectedFlight;
+    
+    protected override async Task OnInitializedAsync()
+    {
+        flights = await flightService.GetAllFlightsAsync();
+    }
+
+    private void CreateFlightAsync()
+    {
+        navMgr.NavigateTo("/CreateFlight");
+    }
+
+}

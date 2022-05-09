@@ -2,7 +2,7 @@ using System.Security.Claims;
 
 namespace BlazorUI.Authentication;
 
-public interface IAuthService
+public interface IAuth
 {
     public Task LoginAsync(string email, string password);
     public Task LogoutAsync();

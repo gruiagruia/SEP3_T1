@@ -2,7 +2,7 @@
 @using Domain.Model
 @using Domain.Interfaces
 @inject NavigationManager navMgr
-@inject IAuth Auth
+@inject IUser userService
 
 <div class="container mb-5" style="width: 70%; height: 300px">
   <div class="row">
@@ -15,24 +15,24 @@
             <div class="row mb-4">
               <div class="col">
                 <div class="form-outline">
-                  <input placeholder="First Name" type="text" id="form6Example1" class="form-control" @bind="firstName"/>
+                  <input placeholder="First Name" type="text" id="form6Example1" class="form-control" @bind="userToEdit.FirstName"/>
                 </div>
               </div>
               <div class="col">
                 <div class="form-outline">
-                  <input placeholder="Last Name" type="text" id="form6Example2" class="form-control" @bind="lastName"/>
+                  <input placeholder="Last Name" type="text" id="form6Example2" class="form-control" @bind="userToEdit.LastName"/>
                 </div>
               </div>
             </div>
 
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <input placeholder="Email" type="email" id="form6Example5" class="form-control" @bind="email"/>
+              <input placeholder="Email" type="email" id="form6Example5" class="form-control" @bind="userToEdit.Email"/>
             </div>
 
             <!-- Text input -->
             <div class="form-outline mb-4">
-              <input placeholder="Password" type="text" id="form6Example6" class="form-control" @bind="password"/>
+              <input placeholder="Password" type="text" id="form6Example6" class="form-control" @bind="userToEdit.Password"/>
             </div>
 
             <!-- Submit button -->
@@ -48,30 +48,11 @@
 
 
 @code {
-  
-  private string firstName;
-  private string lastName;
-  private string email;
-  private string password;
-  private string response;
+  private User userToEdit = new User();
 
-  private async Task UpdateButtonClicked()
+  private void UpdateButtonClicked()
   {
-    User updatedUser = new User(firstName, lastName, email, password, "customer");
-    
+    userService.UpdateUserAsync(userToEdit);
     navMgr.NavigateTo("/");
-    
-    response = "";
-    try
-    {
-      await Auth.UpdateUserAsync(updatedUser);
-      navMgr.NavigateTo("/");
-    }
-    catch (Exception e)
-    {
-      response = "Update failed. Email already exists.";
-      Console.WriteLine(response);
-    }
-    
   }
 }

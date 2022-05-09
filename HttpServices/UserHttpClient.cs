@@ -7,7 +7,7 @@ using Domain.Model;
 
 namespace HttpServices;
 
-public class UserHttpClient : IAuth
+public class UserHttpClient : IUser
 {
      public async Task<ICollection<User>> GetAllUsersAsync()
     {
@@ -29,7 +29,7 @@ public class UserHttpClient : IAuth
         return users;
     }
 
-     public async Task<bool> SaveUserAsync(User user)
+     public async Task<User> SaveUserAsync(User user)
      {
          using HttpClient client = new();
 
@@ -49,7 +49,7 @@ public class UserHttpClient : IAuth
              throw new Exception($"Error: {response.StatusCode}, {responseContent}");
          }
         
-         Boolean returned = JsonSerializer.Deserialize<bool>(responseContent, new JsonSerializerOptions
+         User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
              { PropertyNameCaseInsensitive = true })!;
          Console.WriteLine(returned + " pe client");
          
@@ -76,7 +76,7 @@ public class UserHttpClient : IAuth
         
     }
 
-    public async Task<bool> UpdateUserAsync(User user)
+    public async Task<User> UpdateUserAsync(User user)
     {
         using HttpClient client = new();
         
@@ -93,13 +93,18 @@ public class UserHttpClient : IAuth
         if (!response.IsSuccessStatusCode)
         { throw new Exception($"Error: {response.StatusCode}, {responseContent}"); }
         
-        Boolean returned = JsonSerializer.Deserialize<Boolean>(responseContent, new JsonSerializerOptions
+        User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
             { PropertyNameCaseInsensitive = true})!;
 
         return returned;
     }
 
-    
+    public Task<User> GetUserByEmailAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
+
+
     public async Task<User> GetUserById(int id)
     {
         using HttpClient client = new();

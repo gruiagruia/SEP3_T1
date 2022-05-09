@@ -1,0 +1,41 @@
+@using Domain.Model
+
+<EditForm Model="@price" OnValidSubmit="CreateFlightAsync">
+            <DataAnnotationsValidator />
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Travel Class</label>
+                    <InputSelect @bind-Value="price.travelClass" class="form-control">
+                        <option value="Economy">Economy</option>
+                        <option value="Premium Economy">Premium Economy</option>
+                        <option value="Business">Business</option>
+                        <option value="First">First</option>
+                    </InputSelect>
+                    <ValidationMessage For="@(() => price.travelClass)"/>
+                </div>
+                <div class="form-group col">
+                    <label>Price</label>
+                    <InputNumber @bind-Value="price.pricePerSeat" class="form-control"/>
+                    <ValidationMessage For="@(() => price.pricePerSeat)"/>
+                </div>
+                <div class="form-group col">
+                    <label>Currency</label>
+                    <InputText @bind-Value="price.currency" class="form-control"/>
+                    <ValidationMessage For="@(() => price.currency)"/>
+                </div>
+                <div class="form-group col">
+                    <label>         </label>
+                    <button type="submit" class="btn btn-primary mr-1">+</button>
+                </div>
+            </div>
+</EditForm>
+
+@code {
+
+    [Parameter]
+    public Price price { get; set; } = new Price();
+
+    private void CreateFlightAsync()
+    {}
+
+}

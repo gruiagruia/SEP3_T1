@@ -8,10 +8,8 @@ public class User
     public string Email { get; set; }
     public string Password { get; set; }
     public string Role { get; set; }
-
-    public User()
-    {
-    }
+    
+    public User(){}
 
     public User(string firstName, string lastName, string email, string password, string role)
     {
@@ -31,4 +29,8 @@ public class User
         Password = password;
         Role = role;
     }
+    
+    
+    
+    
 }

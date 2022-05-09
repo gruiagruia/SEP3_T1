@@ -1,0 +1,121 @@
+@page "/CreateFlight"
+@using Domain.Interfaces
+@using Domain.Model
+@using BlazorUI.Pages.UIElements
+@inject IFlight flightService
+@inject NavigationManager navMgr
+
+@layout AgentLayout
+<div class="container">
+  <div class="row justify-content-between">
+    <div class="col-4">
+      <h3>Create Flight</h3>
+    </div>
+  </div>
+</div>
+<div class="card-body">
+        <EditForm Model="@flightToCreate" OnValidSubmit="CreateFlightAsync">
+            <DataAnnotationsValidator />
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Aircraft Code</label>
+                    <InputNumber @bind-Value="flightToCreate.aircraftCode" class="form-control"></InputNumber>
+                    <ValidationMessage For="@(() => flightToCreate.aircraftCode)" />
+                </div>
+                <div class="form-group col">
+                    <label>Airline</label>
+                    <InputText @bind-Value="flightToCreate.airline" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.airline)" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Origin</label>
+                    <InputText @bind-Value="flightToCreate.origin" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.origin)" />
+                </div>
+                <div class="form-group col">
+                    <label>Destination</label>
+                    <InputText @bind-Value="flightToCreate.destination" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.destination)" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Departure Date</label>
+                    <InputDate @bind-Value="departureDate" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.departureDate)" />
+                </div>
+                <div class="form-group col">
+                    <label>Arrival Date</label>
+                    <InputDate @bind-Value="arrivalDate" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.arrivalDate)" />
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <label>Number of Bookable Seats</label>
+                    <InputNumber @bind-Value="flightToCreate.numberOfBookableSeats" class="form-control" />
+                    <ValidationMessage For="@(() => flightToCreate.numberOfBookableSeats)" />
+                </div>
+                <div class="form-group col">
+                    
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col">
+                    <button type="submit" class="btn btn-primary mr-1" onclick="@addAdditionalServiceCard">Add Additional Service</button>
+                    <AdditionalServiceCard></AdditionalServiceCard>
+                    @foreach (var item in additionalServices)
+                    {
+                        <AdditionalServiceCard></AdditionalServiceCard>
+                    }
+                </div>
+                <div class="form-group col">
+                    <button type="submit" class="btn btn-primary mr-1" onclick="@addPriceCard">Add Price</button>
+                        <PriceCard></PriceCard>
+                        @foreach (var item in priceCards)
+                        {
+                            <PriceCard></PriceCard>
+                        }
+                </div>
+            </div>
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary mr-1">Register</button>
+                <button type="reset" class="btn btn-secondary">Cancel</button>
+            </div>
+        </EditForm>
+    </div>
+@code {
+
+    [Parameter]
+    public ICollection<PriceCard> priceCards { get; set; } = new List<PriceCard>();
+    [Parameter]
+    public ICollection<AdditionalService> additionalServiceCards { get; set; } = new List<AdditionalService>();
+    
+    
+    private Flight flightToCreate = new Flight();
+    private DateTime departureDate;
+    private DateTime arrivalDate;
+    private ICollection<Price> prices = new List<Price>();
+    private ICollection<AdditionalService> additionalServices = new List<AdditionalService>();
+
+    private async Task CreateFlightAsync()
+    {
+        flightToCreate.departureDate = departureDate.ToString();
+        flightToCreate.arrivalDate = arrivalDate.ToString();
+        //await flightService.CreateFlightAsync(new Flight(12, "Iberia", "MADRID", "LONDON", new DateTime(2022, 1, 1).ToString("yyyy-MM-dd"), new DateTime(2022, 1, 15).ToString("yyyy-MM-dd"),2, 23, "on time", 234.5, prices));
+        navMgr.NavigateTo("/Flights");
+    }
+
+    private void addPriceCard()
+    {
+        priceCards.Add(new PriceCard());
+    }
+    
+    private void addAdditionalServiceCard()
+    {
+        additionalServices.Add(new AdditionalService());
+    }
+    
+}
