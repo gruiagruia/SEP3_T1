@@ -18,7 +18,6 @@ builder.Services.AddScoped<IFlight, FlightHttpClient>();
 builder.Services.AddScoped<IAmadeus, AmadeusHttpClient>();
 builder.Services.AddBlazoredModal();
 
-
 var app = builder.Build();
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjEzODAxQDMyMzAyZTMxMmUzMGRGVWZlR2cyM1ltNktSTUZWc1QrL2J1Vy83eW5zcDlPR2EwcW53TmZIM3c9");

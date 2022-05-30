@@ -11,7 +11,7 @@
             <h3>Flights</h3>
         </div>
         <div class="col-4">
-            <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="@CreateFlightAsync"> New Flight</button>
+            <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="@CreateFlightAsync">New Flight</button>
         </div>
     </div>
     <div class="row"></div>
@@ -23,49 +23,52 @@
                            <td colspan="10">No flights found.</td>  
                        </tr>  
                    }  
-                   else  
-                   {  
-                       <thead>  
-                           <tr class="danger">  
-                               <th data-defaultsign="_19"> AIRCRAFT CODE</th>  
-                               <th data-defaultsign="AZ">AIRLINE</th>  
-                               <th data-defaultsign="AZ">ORIGIN</th>  
-                               <th data-defaultsign="month">DESTINATION</th>  
-                               <th data-firstsort="desc">DEPARTURE DATE</th>  
-                               <th data-defaultsign="AZ">ARRIVAL DATE</th>  
-                               <th data-defaultsort="disabled">DURATION</th>  
-                               <th data-defaultsort="disabled">NUMBER OF BOOKABLE SEATS</th>  
-                               <th data-defaultsort="disabled">STATUS</th> 
-                               <th data-defaultsort="disabled">PRICE</th>  
-                           </tr>  
-                       </thead>  
-                       foreach (var item in flights)  
-                       {  
-                           <tr>  
-                               <td>@item.aircraftCode</td>  
-                               <td>@item.airline</td>  
-                               <td>@item.origin</td>  
-                               <td>@item.destination</td>  
-                               <td>@item.departureDate</td>  
-                               <td>@item.arrivalDate</td>  
-                               <td>@item.duration</td>  
-                               <td>@item.numberOfBookableSeats</td> 
-                               <td>@item.status</td>
-                           </tr>  
-                       }  
+                   else     
+                   {
+                       <RadzenDataGrid AllowFiltering="true" AllowColumnResize="true" 
+                                       FilterMode="FilterMode.Simple" PageSize="10" AllowPaging="true" AllowSorting="true" Data="@flights" TItem="Flight" ColumnWidth="300px" 
+                                       FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                       LogicalFilterOperator="LogicalFilterOperator.Or">
+                           <Columns>
+                               <RadzenDataGridColumn TItem="Flight" Property="flightId" Title="Flight ID" Width="90px" TextAlign="TextAlign.Center" />
+                               <RadzenDataGridColumn TItem="Flight" Property="aircraftCode" Filterable="false" Title="Aircraft Code" Width="110px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="airline" Title="Airline" Width="150px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="origin" Title="Origin" Width="150px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="destination" Title="Destination" Width="150px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="departureDate" Title="Departure Date" Width="175px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="arrivalDate" Filterable="false" Title="Arrival Date" Width="175px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="duration" Filterable="false" Title="Duration" Width="90px" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="status" Filterable="false" Title="Status" Width="150px" TextAlign="TextAlign.Center"/>
+                               @*<RadzenDataGridColumn TItem="Flight" Property="additionalService" Filterable="false" Title="Additional Services" TextAlign="TextAlign.Center"/>
+                               <RadzenDataGridColumn TItem="Flight" Property="seats" Filterable="false" Title="Seats" TextAlign="TextAlign.Center"/>*@
+                           </Columns>
+                       </RadzenDataGrid>
                    }  
                </table>  
            </div>  
     </div>
 
-
 @code {
     ICollection<Flight> flights = new List<Flight>();
+    /*ICollection<AdditionalService> additionalServices = new List<AdditionalService>();
+    ICollection<Seat> seats = new List<Seat>();*/
     Flight selectedFlight;
     
     protected override async Task OnInitializedAsync()
     {
-        flights = await flightService.GetAllFlightsAsync();
+        /*AdditionalService additionalService1 = new("food", true, 10);
+        AdditionalService additionalService2 = new("drinks", true, 20);
+        Seat seat1 = new("premium", 200, 20);
+        additionalServices.Add(additionalService1);
+        additionalServices.Add(additionalService2);
+        seats.Add(seat1);*/
+        Flight flight1 = new(1, 101, "TAP", "Lisbon", "Madrid", "20-05-2022", "20-05-2022", 90, "normal");
+        Flight flight2 = new(2, 102, "Emirates", "Lisbon", "Dubai", "21-05-2022", "21-05-2022", 90, "normal");
+        Flight flight3 = new(3, 103, "Iberia", "Madrid", "Lisbon", "22-05-2022", "22-05-2022", 90, "normal");
+        flights.Add(flight1);
+        flights.Add(flight2);
+        flights.Add(flight3);
+        //flights = await flightService.GetAllFlightsAsync();
     }
 
     private void CreateFlightAsync()
