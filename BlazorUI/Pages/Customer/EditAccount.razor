@@ -1,43 +1,57 @@
 ﻿@page "/EditAccount"
 @using Domain.Model
 @using Domain.Interfaces
+@using BlazorUI.Authentication
 @inject NavigationManager navMgr
 @inject IUser userService
+@inject IAuth authService
 
 <div class="container mb-5" style="width: 70%; height: 300px">
   <div class="row">
     <div class="col-sm">
       <div class="card">
         <div class="card-body py-5 px-md-5">
-          <form>
+          <EditForm Model="@userToEdit" OnValidSubmit="UpdateButtonClicked">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
             <h3 class="text-center mb-4">Edit Account</h3>
+            <label>@response</label>
             <!-- 2 column grid layout with text inputs for the first and last names -->
             <div class="row mb-4">
               <div class="col">
                 <div class="form-outline">
-                  <input placeholder="First Name" type="text" id="form6Example1" class="form-control" @bind="userToEdit.FirstName"/>
+                  <label>First Name</label>
+                  <InputText placeholder="@userLogged.FirstName" @bind-Value="userToEdit.FirstName" class="form-control"></InputText>
+                  <ValidationMessage For="@(() => userToEdit.FirstName)"/>
+
                 </div>
               </div>
               <div class="col">
                 <div class="form-outline">
-                  <input placeholder="Last Name" type="text" id="form6Example2" class="form-control" @bind="userToEdit.LastName"/>
+                  <label>Last Name</label>
+                  <InputText placeholder="@userLogged.LastName" @bind-Value="userToEdit.LastName" class="form-control"></InputText>
+                  <ValidationMessage For="@(() => userToEdit.LastName)"/>
                 </div>
               </div>
             </div>
 
             <!-- Email input -->
             <div class="form-outline mb-4">
-              <input placeholder="Email" type="email" id="form6Example5" class="form-control" @bind="userToEdit.Email"/>
+              <label>Email</label>
+              <InputText placeholder="@userLogged.Email" @bind-Value="userToEdit.Email" class="form-control"></InputText>
+              <ValidationMessage For="@(() => userToEdit.Email)"/>
             </div>
 
             <!-- Text input -->
             <div class="form-outline mb-4">
-              <input placeholder="Password" type="text" id="form6Example6" class="form-control" @bind="userToEdit.Password"/>
+              <label>Password</label>
+              <InputText placeholder="@userLogged.Password" @bind-Value="userToEdit.Password" class="form-control"></InputText>
+              <ValidationMessage For="@(() => userToEdit.Password)"/>
             </div>
 
             <!-- Submit button -->
-            <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="@UpdateButtonClicked">Update</button>
-          </form>
+            <button type="button" class="btn btn-primary btn-block mb-4" @onclick="UpdateButtonClicked">Update</button>
+          </EditForm>
         </div>
       </div>
     </div>
@@ -49,10 +63,25 @@
 
 @code {
   private User userToEdit = new User();
+  private User userLogged = new User();
+  private string response = "";
 
-  private void UpdateButtonClicked()
+  private async Task UpdateButtonClicked()
   {
-    userService.UpdateUserAsync(userToEdit);
-    navMgr.NavigateTo("/");
+    try
+    {
+      userToEdit.Id = userLogged.Id;
+      await userService.UpdateUserAsync(userToEdit);
+      navMgr.NavigateTo("/");
+    }
+    catch (Exception e)
+    {
+      response = e.Message;
+    }
+    
+  }
+  protected override async Task OnInitializedAsync()
+  {
+    userLogged = await authService.GetUserFromCacheAsync();
   }
 }

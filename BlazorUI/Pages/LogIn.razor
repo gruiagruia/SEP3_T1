@@ -1,6 +1,5 @@
 ﻿@page "/LogIn"
 
-@using Syncfusion.Blazor.Calendars
 @using BlazorUI.Authentication
 @inject IAuth authService
 @inject NavigationManager navMgr
@@ -44,7 +43,7 @@
                     </div>
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-4" @onclick="LoginAsync">Sign in</button>
+                    <button type="button" class="btn btn-primary btn-block mb-4" @onclick="LoginAsync">Sign in</button>
 
                     <!-- Register buttons -->
                     <div class="text-center">
@@ -91,7 +90,7 @@
                     </div>
 
                     <!-- Submit button -->
-                    <button type="submit" class="btn btn-primary btn-block mb-3">Sign in</button>
+                    <button type="button" class="btn btn-primary btn-block mb-3">Sign in</button>
                   </form>
                 </div>
               </div>
@@ -119,6 +118,7 @@
     catch (Exception e)
     {
       errorLabel = $"Error: {e.Message}";
+      Console.WriteLine(errorLabel);
     }
 
   }

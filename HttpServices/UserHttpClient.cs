@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -9,27 +9,8 @@ namespace HttpServices;
 
 public class UserHttpClient : IUser
 {
-     public async Task<ICollection<User>> GetAllUsersAsync()
-    {
-        using HttpClient client = new();
-        HttpResponseMessage responseMessage = await client.GetAsync("http://localhost:8084/users");
-        ValidateContent(responseMessage);
-        string content = await responseMessage.Content.ReadAsStringAsync();
 
-        if (!responseMessage.IsSuccessStatusCode)
-        {
-            throw new Exception($"Error: {responseMessage.StatusCode}, {content}");
-        }
-        
-        ICollection<User> users = JsonSerializer.Deserialize<ICollection<User>>(content, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-        })!;
-
-        return users;
-    }
-
-     public async Task<User> SaveUserAsync(User user)
+    public async Task SaveUserAsync(User user)
      {
          using HttpClient client = new();
 
@@ -44,16 +25,34 @@ public class UserHttpClient : IUser
          string responseContent = await response.Content.ReadAsStringAsync();
          
 
-         if (!response.IsSuccessStatusCode)
+         if (response.StatusCode == HttpStatusCode.BadRequest)
          {
-             throw new Exception($"Error: {response.StatusCode}, {responseContent}");
+             throw new Exception("Email already exists in system.");
          }
         
-         User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
-             { PropertyNameCaseInsensitive = true })!;
-         Console.WriteLine(returned + " pe client");
+         if (response.StatusCode == HttpStatusCode.Conflict)
+         {
+             throw new Exception("Invalid password. Password must:"+
+                                 "\n -Be between 8 and 20 characters in length."+
+                                 "\n -Include at least one uppercase character."+
+                                 "\n -Include at least one lowercase character."+
+                                 "\n -Include at least one number."+
+                                 "\n -Include one special character among @ # $ %.");
+         }
+
+         if (response.StatusCode == HttpStatusCode.InternalServerError)
+         {
+             throw new Exception("Email already exists in system.");
+         }
          
-         return returned;
+         if (response.StatusCode == HttpStatusCode.OK)
+         {
+             throw new Exception("Registration was successful.");
+         }
+        
+         String returned = JsonSerializer.Deserialize<String>(responseContent, new JsonSerializerOptions
+             { PropertyNameCaseInsensitive = true })!;
+         Console.WriteLine(returned);
      }
 
     public async Task DeleteUserAsync(User user)
@@ -67,7 +66,7 @@ public class UserHttpClient : IUser
 
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage responseMessage = await client.DeleteAsync($"http://localhost:8084/users/{user.Id}");
+        HttpResponseMessage responseMessage = await client.DeleteAsync($"http://localhost:8080/users/{user.Id}");
         string responseContent = await responseMessage.Content.ReadAsStringAsync();
         
         if (!responseMessage.IsSuccessStatusCode)
@@ -76,7 +75,7 @@ public class UserHttpClient : IUser
         
     }
 
-    public async Task<User> UpdateUserAsync(User user)
+    public async Task UpdateUserAsync(User user)
     {
         using HttpClient client = new();
         
@@ -89,45 +88,40 @@ public class UserHttpClient : IUser
 
         HttpResponseMessage response = await client.PutAsync($"http://localhost:8080/users/{user.Id}", content);
         string responseContent = await response.Content.ReadAsStringAsync();
-        
+
         if (!response.IsSuccessStatusCode)
-        { throw new Exception($"Error: {response.StatusCode}, {responseContent}"); }
-        
-        User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
-            { PropertyNameCaseInsensitive = true})!;
-
-        return returned;
+        {
+            throw new Exception("User could not be updated.");
+        }
     }
 
-    public Task<User> GetUserByEmailAsync(string email)
-    {
-        throw new NotImplementedException();
-    }
-
-
-    public async Task<User> GetUserById(int id)
-    {
-        using HttpClient client = new();
-        
-        HttpResponseMessage response = await client.GetAsync($"http://localhost:8084/users/{id}");
-        string responseContent = await response.Content.ReadAsStringAsync();
-        
-        if (!response.IsSuccessStatusCode)
-        { throw new Exception($"Error: {response.StatusCode}, {responseContent}"); }
-        
-        User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
-            { PropertyNameCaseInsensitive = true})!;
-
-        return returned;
-    }
-    
-    public async Task<User> GetUserByEmail(string email)
+    public async Task<User> GetUserByEmailAsync(string email)
     {
         using HttpClient client = new();
         
         HttpResponseMessage response = await client.GetAsync($"http://localhost:8080/users/{email}");
         string responseContent = await response.Content.ReadAsStringAsync();
         
+        
+        if (!response.IsSuccessStatusCode)
+        { throw new Exception($"Error: {response.StatusCode}, {responseContent}"); }
+        
+        User returned = JsonSerializer.Deserialize<User>(responseContent, new JsonSerializerOptions
+            { PropertyNameCaseInsensitive = true})!;
+        
+
+        return returned;
+    }
+    
+    public async Task<User> GetUserByIdAsync(int id)
+    {
+        using HttpClient client = new();
+        
+        HttpResponseMessage response = await client.GetAsync($"http://localhost:8080/users/find/{id}");
+        string responseContent = await response.Content.ReadAsStringAsync();
+
+        
+        
         if (!response.IsSuccessStatusCode)
         { throw new Exception($"Error: {response.StatusCode}, {responseContent}"); }
         
@@ -137,15 +131,4 @@ public class UserHttpClient : IUser
         return returned;
     }
     
-    public HttpContent ValidateContent(HttpResponseMessage response)
-    {
-        if(string.IsNullOrEmpty(response.Content?.ReadAsStringAsync().Result))
-        {
-            return response.Content= new StringContent("null",Encoding.UTF8, MediaTypeNames.Application.Json);
-        }
-        else
-        {
-            return response.Content;
-        }
-    }
 }

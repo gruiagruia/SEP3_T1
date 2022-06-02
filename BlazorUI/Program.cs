@@ -18,6 +18,14 @@ builder.Services.AddScoped<IFlight, FlightHttpClient>();
 builder.Services.AddScoped<IAmadeus, AmadeusHttpClient>();
 builder.Services.AddBlazoredModal();
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("Agent", policyBuilder =>
+        policyBuilder.RequireAuthenticatedUser().RequireClaim("Role", "agent"));
+    options.AddPolicy("Client", policyBuilder =>
+        policyBuilder.RequireAuthenticatedUser().RequireClaim("Role", "client"));
+});
+
 var app = builder.Build();
 
 Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjEzODAxQDMyMzAyZTMxMmUzMGRGVWZlR2cyM1ltNktSTUZWc1QrL2J1Vy83eW5zcDlPR2EwcW53TmZIM3c9");

@@ -19,35 +19,38 @@ public class AuthImpl : IAuth
 
     public async Task LoginAsync(string email, string password)
     {
-        User? user = await userService.GetUserByEmailAsync(email); // Get user from database
-
-        ValidateLoginCredentials(password, user); // Validate input data against data from database
-        // validation success
+        User? user = await userService.GetUserByEmailAsync(email);
+        Console.WriteLine(user.FirstName + " got from server");
         
+        ValidateLoginCredentials(password, user);
+
         await CacheUserAsync(user!); // Cache the user object in the browser 
 
-        ClaimsPrincipal principal = CreateClaimsPrincipal(user); // convert user object to ClaimsPrincipal
-        
-        OnAuthStateChanged?.Invoke(principal); // notify interested classes in the change of authentication state
+        ClaimsPrincipal principal = CreateClaimsPrincipal(user);
+
+        OnAuthStateChanged?.Invoke(principal);
+       
     }
 
     public async Task LogoutAsync()
     {
-        await ClearUserFromCacheAsync(); // remove the user object from browser cache
-        ClaimsPrincipal principal = CreateClaimsPrincipal(null); // create a new ClaimsPrincipal with nothing.
-        OnAuthStateChanged?.Invoke(principal); // notify about change in authentication state
+        await ClearUserFromCacheAsync();
+        
+        ClaimsPrincipal principal = CreateClaimsPrincipal(null);
+        
+        OnAuthStateChanged?.Invoke(principal);
     }
 
-    public async Task<ClaimsPrincipal> GetAuthAsync() // this method is called by the authentication framework, whenever user credentials are reguired
+    public async Task<ClaimsPrincipal> GetAuthAsync() 
     {
-        User? user =  await GetUserFromCacheAsync(); // retrieve cached user, if any
+        User? user =  await GetUserFromCacheAsync(); 
 
-        ClaimsPrincipal principal = CreateClaimsPrincipal(user); // create ClaimsPrincipal
+        ClaimsPrincipal principal = CreateClaimsPrincipal(user);
 
         return principal;
     }
 
-    private async Task<User?> GetUserFromCacheAsync()
+    public async Task<User?> GetUserFromCacheAsync()
     {
         string userAsJson = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", "currentUser");
         if (string.IsNullOrEmpty(userAsJson)) return null;
@@ -82,7 +85,6 @@ public class AuthImpl : IAuth
     {
         string serialisedData = JsonSerializer.Serialize(user);
         await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
-        Console.WriteLine("HI");
     }
 
     private async Task ClearUserFromCacheAsync()

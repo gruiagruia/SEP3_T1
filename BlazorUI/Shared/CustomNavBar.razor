@@ -1,5 +1,7 @@
-﻿<header>
-    
+﻿@using Login
+
+<header>
+
 </header>
 <nav class="navbar navbar-expand-sm fixed-top navbar-light mt-3">
     <div class="container">
@@ -11,7 +13,7 @@
         </button>
         <div class="collapse navbar-collapse" id="navbar1">
             <ul class="navbar-nav">
-                <NavLink href="EditAccount">
+                <NavLink href="About">
                     <a class="nav-link" style="text-decoration: none">About </a>
                 </NavLink>
                 <NavLink href="AgentDashboard">
@@ -22,18 +24,7 @@
                 </li>
             </ul>
             <ul class="nav nav-pills ml-auto">
-                <li class="nav-item" role="presentation">
-                    <NavLink class="nav-link" href="LogIn" Style="background-color: #00887D">
-                        <a style="color: white" id="tab-login" data-mdb-toggle="pill" role="tab"
-                           aria-controls="pills-login" aria-selected="true">Login</a>
-                    </NavLink>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <NavLink class="nav-link" href="Register" Style="background-color: transparent">
-                        <a style="color: #012438" id="tab-login" data-mdb-toggle="pill" role="tab"
-                        aria-controls="pills-login" aria-selected="true">Register</a>
-                    </NavLink>
-                </li>
+                <LoginButtons/>
             </ul>
         </div>
     </div>
